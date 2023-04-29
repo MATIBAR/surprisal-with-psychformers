@@ -1,0 +1,2 @@
+dccuchile/bert-base-spanish-wwm-cased
+bert-base-multilingual-cased

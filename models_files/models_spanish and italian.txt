@@ -1,0 +1,2 @@
+dbmdz/bert-base-italian-cased
+dccuchile/bert-base-spanish-wwm-cased
