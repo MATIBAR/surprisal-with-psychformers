@@ -1,6 +1,4 @@
 import os
-import sys
-import time
 import argparse
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForMaskedLM
 from torch.nn import functional as F
@@ -22,7 +20,6 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Calculates surprisal and other \
                                     metrics (in development) of transformers language models')
     
-    #NOTE: DO NOT PROVIDE, AUTOMATICALLY ADDED BASED ON THE SELECTED LANGUAGE
     parser.add_argument('--stimuli', '-i', type=str,
                         help='stimuli to test')
     parser.add_argument('--stimuli_list', '-ii', type=str,
@@ -484,42 +481,11 @@ def get_surprisal_causal_mask(model, tokenizer, preceding_context, following_wor
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    language = 'italian'
-    # language = 'spanish'
-
-    if language == 'italian':
-        # stimuli_list  = r'C:\Users\Dell\Desktop\Programmi\Surprisal\LangLearn_Training_Data\CItA\texts\texts_stimuli_all\files_list.txt'
-        stimuli_list  = r'C:\Users\Dell\Desktop\Programmi\Surprisal\LangLearn_Training_Data\CItA\texts\texts_stimuli_all\files_list_reduced_test.txt'
-        output_folder = r'C:\Users\Dell\Desktop\Programmi\Surprisal\PsychFormers\output\italian'
-        model         =  'dbmdz/bert-base-italian-cased' 
-
-    # SPANISH
-    if language == 'spanish':
-        stimuli_list  = r'C:\Users\Dell\Desktop\Programmi\Surprisal\LangLearn_Training_Data\COWS-L2H\texts\texts_stimuli_all\files_list.txt'
-        output_folder = r'C:\Users\Dell\Desktop\Programmi\Surprisal\PsychFormers\output\spanish'
-        model         =  'dccuchile/bert-base-spanish-wwm-cased' 
-
-    sys.argv.extend(
-        [
-            '--stimuli_list',       stimuli_list,
-            '--output_directory',   output_folder, 
-            '--model',              model,
-            '--task',               'surprisal',
-            '--following_context',
-        ]
-    )
-
     args = parse_args()
     output_directory, primary_decoder, include_following_context, model_list, metric_list, stimulus_file_list, cpu = process_args(
         args)
-    
-    start = time.time()
     create_and_run_models(model_list, stimulus_file_list, metric_list, primary_decoder, output_directory,
                           include_following_context, cpu)
-    
-    finish = time.time()
-    print(f'Total time: {finish - start :.2f}')
 
 
 if __name__ == "__main__":
